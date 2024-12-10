@@ -1,90 +1,6 @@
-const mapPoints = [
-    {
-    name: "George Albert Smith's Film Studio",
-    type: "cinema",
-    latlon: [50.829140, -0.156026],
-    image: "./res/1.jpg"
-    },
-    {
-    name: "New Venture Theatre",
-    type: "theatre",
-    latlon: [50.824449, -0.153827],
-    image: "./res/2.jpg"
-    },
-    {
-    name: "Curzon Kinema",
-    type: "cinema",
-    latlon: [50.824878, -0.152086],
-    image: "./res/3.jpg"
-    },
-    {
-    name: "Brighton Little Theatre",
-    type: "theatre",
-    latlon: [50.823656, -0.148502],
-    image: "./res/4.jpg"
-    },
-    {
-    name: "The Regent",type: "cinema",
-    latlon: [50.823961, -0.143179],
-    image: "./res/5.jpg"
-    },
-    {
-    name: "Cinescene",
-    type: "cinema",
-    latlon: [50.823466, -0.143092],
-    image: "./res/6.jpg"
-    },
-    {
-    name: "Brighton Hippodrome",
-    type: "theatre",
-    latlon: [50.821813, -0.142980],
-    image: "./res/7.jpg"
-    },
-    {
-    name: "The Savoy",
-    type: "cinema",
-    latlon: [50.819957, -0.139050],
-    image: "./res/8.jpg"
-    },
-    {
-    name: "The Marlborough",
-    type: "theatre",
-    latlon: [50.822230, -0.135989],
-    image: "./res/9.jpg"
-    },
-    {
-    name: "The Astoria",
-    type: "cinema",
-    latlon: [50.825965, -0.135905],
-    image: "./res/10.jpg"
-    },
-    {
-    name: "The Theatre Royal",
-    type: "theatre",
-    latlon: [50.823164, -0.139622],
-    image: "./res/11.jpg"
-    }
-    ];
+const mapPoints = [ ];
 
     const mapIcons = {
-        cinLoc: L.icon({
-        iconUrl: './res/cinema_location_x64.png',
-        shadowUrl: './res/location_x64_shadow.png',
-        iconSize: [64, 64], // size of the icon
-        shadowSize: [64, 64], // size of the shadow
-        iconAnchor: [32, 64], // point corresponding to marker's location
-        shadowAnchor: [32, 64], // the same for the shadow
-        popupAnchor: [0, -42] // point relative to iconAnchor where popup opens
-        }),
-        theLoc: L.icon({
-        iconUrl: './res/theatre_location_x64.png',
-        shadowUrl: './res/location_x64_shadow.png',
-        iconSize: [64, 64],
-        shadowSize: [64, 64],
-        iconAnchor: [32, 64],
-        shadowAnchor: [32, 64],
-        popupAnchor: [0, -42]
-        }),
         curLoc: L.icon({
             iconUrl: './res/current_location_x48.png',
             shadowUrl: './res/current_location_x48_shadow.png',
@@ -102,7 +18,16 @@ const mapPoints = [
                 iconAnchor: [48, 48],
                 shadowAnchor: [48, 48],
                 popupAnchor: [0, 0]
-                })
+                }),
+                markLoc: L.icon({
+                    iconUrl: './res/location_x64.png',
+                    shadowUrl: './res/location_x64_shadow.png',
+                    iconSize: [48, 48],
+                    shadowSize: [48, 48],
+                    iconAnchor: [24, 24],
+                    shadowAnchor: [24, 24],
+                    popupAnchor: [0, 0]
+                    })
         };
 
         const generateOrientationIcons = () => {
@@ -139,6 +64,24 @@ const mapPoints = [
             }
 
 window.addEventListener('load', () => {
+    url = 'https://tm838.brighton.domains/SkipApp/api.php';
+     fetch(url)
+     .then(function (response) {
+        //console.log(reponse);
+        return response.json();
+     })
+    .then (function (value) {
+        value.forEach((point, index) => {
+            mapPoints.push({
+                id: point.id,
+                type: point.type,
+                locName: point.locName,
+                latlon: [point.lat,point.lon],
+                imageLoc: point.imageLoc
+            });
+    })
+        
+console.log(mapPoints);
     const map = L.map('map');
     const skips = document.getElementById('skips') ;
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -146,14 +89,20 @@ window.addEventListener('load', () => {
     }).addTo(map);
     const markers = new L.featureGroup();
 for(let point of mapPoints){
-const icon = (point.type === 'cinema') ? mapIcons.cinLoc : mapIcons.theLoc;
+const icon =  mapIcons.markLoc;
 const marker = L.marker(point.latlon, {icon: icon}).addTo(map);
 marker.bindPopup('<div class="map-pop-up">'
-+ '<p class="waypoint-name">' + point.name + '</p>'
-+ '<img src="' + point.image + '">'
-+ '<p class="copy">Image &copy QueenSpark Books </p>'
++ '<p class="waypoint-name">' + point.type + '</p>'
++ '<img src="' + point.imageLoc + '">'
++ '<p class="copy">'+ point.locName +' </p>'
 + '</div>');
 markers.addLayer(marker);
+
+markers.on('click', function(e) {
+    e.layer.setIcon(mapIcons.selected);
+    map.setView(e.layer.getLatLng(), 17);
+});
+
 
 const cardDiv = document.createElement("div");
     cardDiv.className = "card";
@@ -167,15 +116,27 @@ const typeH2 = document.createElement("h2");
     typeH2.textContent = point.type;
 const locH3 = document.createElement("h3");
     locH3.className = "type";
-    locH3.textContent = point.name;
+    locH3.textContent = point.locName;
 const imgElm = document.createElement("img");
-    imgElm.src = point.image; 
+    imgElm.src = point.imageLoc; 
+const pickUpForm = document.createElement("form");
+    pickUpForm.setAttribute("action","api.php");
+    pickUpForm.setAttribute("method","POST");
+const inputInfo = document.createElement("input");
+    inputInfo.setAttribute("type","hidden");
+    inputInfo.setAttribute("id",point.id);
+const submit = document.createElement("input");
+    submit.setAttribute("type","submit");
+    submit.setAttribute("value","Pick Up");
 
+        pickUpForm.appendChild(inputInfo);
+        pickUpForm.appendChild(submit);
         button.appendChild(typeH2);
         content.appendChild(locH3);
         content.appendChild(imgElm);
         cardDiv.appendChild(button);
         cardDiv.appendChild(content);
+        content.appendChild(pickUpForm);
         skips.appendChild(cardDiv);
 
 }
@@ -247,6 +208,7 @@ if(L.Browser.mobile) {
         var i;
         for (i = 0; i < coll.length; i++) {
           coll[i].addEventListener("click", function() {
+            marker.click();
             this.classList.toggle("active");
             var content = this.nextElementSibling;
             if (content.style.display === "block") {
@@ -259,4 +221,4 @@ if(L.Browser.mobile) {
     })
 
 
-
+});
