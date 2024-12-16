@@ -63,7 +63,7 @@ const mapPoints = [ ];
             image.src = './res/current_location_360_x96.png';
             }
 
-window.addEventListener('load', () => {
+window.addEventListener('load', (e) => {
     url = 'https://tm838.brighton.domains/SkipApp/api.php';
      fetch(url)
      .then(function (response) {
@@ -94,23 +94,29 @@ console.log(mapPoints);
 addButton.addEventListener('click',() => {
 
 });
+navigator.geolocation.getCurrentPosition(success);
+
+function success(data) {
+    let lat = data.coords.latitude;
+    let long = data.coords.longitude;
+ 
  addItemDiv.innerHTML= `
-   <form>
+   <form action="api.php" method="post" enctype="multipart/form-data">
     <label for="type">Type of item:</label><br>
     <input type="text" id="type" name="type"><br>
     <label for="locName">Description of Location:</label><br>
     <input type="text" id="locName" name="locName">
     <label for="lat">Lat:</label><br>
-    <input type="text" id="lat" name="lat"  value= "${e.latlong.lat}" readonly><br>
+    <input type="text" id="lat" name="lat"  value= "${lat}" readonly><br>
     <label for="long">Long:</label><br>
-    <input type="text" id="long" name="long" value= "${e.latlong.long}"  readonly><br>
+    <input type="text" id="long" name="long" value= "${long}"  readonly><br>
     <label for="imageLoc">Image:</label><br>
     <input type="file" accept="image/*" capture="environment" name="imageLoc" id="imageLoc"><br>
     <input type="submit" value="submit" id="addItemSubmit"><br>
 
   </form>
  `;
-
+}
 for(let point of mapPoints){
 const icon =  mapIcons.markLoc;
 const marker = L.marker(point.latlon, {icon: icon}).addTo(map);
