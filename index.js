@@ -108,8 +108,8 @@ function success(data) {
     <input type="text" id="locName" name="locName">
     <label for="lat">Lat:</label><br>
     <input type="text" id="lat" name="lat"  value= "${lat}" readonly><br>
-    <label for="long">Long:</label><br>
-    <input type="text" id="long" name="long" value= "${long}"  readonly><br>
+    <label for="lon">Long:</label><br>
+    <input type="text" id="lon" name="lon" value= "${long}"  readonly><br>
     <label for="imageLoc">Image:</label><br>
     <input type="file" accept="image/*" capture="environment" name="imageLoc" id="imageLoc"><br>
     <input type="submit" value="submit" id="addItemSubmit"><br>
