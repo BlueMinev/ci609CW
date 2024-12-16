@@ -8,9 +8,6 @@ html, body {
 }
 h1 {
 box-sizing: border-box;
-height: 5vh;
-font-size: 4vh;
-padding-top: 1vh;
 text-align: center;
 color: silver;
 }

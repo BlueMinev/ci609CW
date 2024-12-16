@@ -1,3 +1,8 @@
-//POST tm838.brighton.domains/SkipApp/api.php?id=3&type=TV&locName=By the bins&lat=50.829140&lon=-0.156026&imageLoc=./res/1.jpg&pickedUp=0 HTTP/1.1
+//POST tm838.brighton.domains/SkipApp/api.php?id=3&type=TV&locName=By the bins&lat=50.829140&lon=-0.156026&imageLoc=./res/1.jpg HTTP/1.1
 
-PUT tm838.brighton.domains/SkipApp/api.php?id=3&pickedUp=1 HTTP/1.1
+//PUT tm838.brighton.domains/SkipApp/api.php?id=3&pickedUp=0 HTTP/1.1
+
+
+//GET tm838.brighton.domains/SkipApp/api.php HTTP/1.1
+
+POST tm838.brighton.domains/SkipApp/api.php?id=2&pickedUp=0 HTTP/1.1

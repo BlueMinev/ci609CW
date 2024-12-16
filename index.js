@@ -84,10 +84,33 @@ window.addEventListener('load', () => {
 console.log(mapPoints);
     const map = L.map('map');
     const skips = document.getElementById('skips') ;
+    const addButton = document.getElementById('addButton')
+    const addItemDiv = document.getElementById('addItemDiv')
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
     }).addTo(map);
     const markers = new L.featureGroup();
+
+addButton.addEventListener('click',() => {
+
+});
+ addItemDiv.innerHTML= `
+   <form>
+    <label for="type">Type of item:</label><br>
+    <input type="text" id="type" name="type"><br>
+    <label for="locName">Description of Location:</label><br>
+    <input type="text" id="locName" name="locName">
+    <label for="lat">Lat:</label><br>
+    <input type="text" id="lat" name="lat"  value= "${e.latlong.lat}" readonly><br>
+    <label for="long">Long:</label><br>
+    <input type="text" id="long" name="long" value= "${e.latlong.long}"  readonly><br>
+    <label for="imageLoc">Image:</label><br>
+    <input type="file" accept="image/*" capture="environment" name="imageLoc" id="imageLoc"><br>
+    <input type="submit" value="submit" id="addItemSubmit"><br>
+
+  </form>
+ `;
+
 for(let point of mapPoints){
 const icon =  mapIcons.markLoc;
 const marker = L.marker(point.latlon, {icon: icon}).addTo(map);
@@ -103,7 +126,7 @@ markers.on('click', function(e) {
     map.setView(e.layer.getLatLng(), 17);
 });
 
-
+//cards 
 const cardDiv = document.createElement("div");
     cardDiv.className = "card";
 const button = document.createElement("button");
@@ -119,17 +142,28 @@ const locH3 = document.createElement("h3");
     locH3.textContent = point.locName;
 const imgElm = document.createElement("img");
     imgElm.src = point.imageLoc; 
+
+    //pick up form
 const pickUpForm = document.createElement("form");
+    pickUpForm.className = "pickUpForm";  
     pickUpForm.setAttribute("action","api.php");
-    pickUpForm.setAttribute("method","POST");
-const inputInfo = document.createElement("input");
-    inputInfo.setAttribute("type","hidden");
-    inputInfo.setAttribute("id",point.id);
+    pickUpForm.setAttribute("method","post");
+const Hiddeninfo1=document.createElement("input"); 
+    Hiddeninfo1.setAttribute("name","id");
+    Hiddeninfo1.setAttribute("id","id");
+    Hiddeninfo1.setAttribute("value",point.id);
+    const Hiddeninfo2=document.createElement("input"); 
+    Hiddeninfo2.setAttribute("name","pickedUp");
+    Hiddeninfo2.setAttribute("id","pickedUp");
+    Hiddeninfo2.setAttribute("value",1);
 const submit = document.createElement("input");
     submit.setAttribute("type","submit");
     submit.setAttribute("value","Pick Up");
 
-        pickUpForm.appendChild(inputInfo);
+
+        
+        pickUpForm.appendChild(Hiddeninfo1);
+        pickUpForm.appendChild(Hiddeninfo2);
         pickUpForm.appendChild(submit);
         button.appendChild(typeH2);
         content.appendChild(locH3);
@@ -140,6 +174,8 @@ const submit = document.createElement("input");
         skips.appendChild(cardDiv);
 
 }
+
+
 map.fitBounds(markers.getBounds(), {padding: [10, 10]});
 
 if(L.Browser.mobile) {
@@ -208,7 +244,6 @@ if(L.Browser.mobile) {
         var i;
         for (i = 0; i < coll.length; i++) {
           coll[i].addEventListener("click", function() {
-            marker.click();
             this.classList.toggle("active");
             var content = this.nextElementSibling;
             if (content.style.display === "block") {
@@ -219,6 +254,10 @@ if(L.Browser.mobile) {
           });
         }
     })
+
+
+
+    
 
 
 });
